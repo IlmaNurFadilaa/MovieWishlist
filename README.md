@@ -1,50 +1,49 @@
-# Welcome to your Expo app 👋
+# 🎬 MovieWishlist
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+Aplikasi **MovieWishlist** adalah platform pencarian dan manajemen daftar film berbasis **React Native** dan **Expo**. Aplikasi ini dirancang dengan antarmuka modern yang responsif untuk penggunaan di perangkat mobile maupun web.
 
-## Get started
+## Fitur Utama
 
-1. Install dependencies
+* **Pencarian Film Real-time**: Menggunakan integrasi TMDB API untuk mencari ribuan judul film.
+* **Manajemen Daftar Keinginan**: Fitur untuk menyimpan film ke daftar "To Watch" atau menandainya sebagai "Reviewed".
+* **Mode Gelap & Terang**: Mendukung tema dinamis (Dark/Light Mode) yang dapat disesuaikan secara global melalui pengaturan.
+* **Dukungan Multi-Bahasa**: Pilihan antarmuka antara Bahasa Indonesia dan English (US).
+* **Antarmuka Responsif**: Desain UI yang dioptimalkan untuk berbagai ukuran layar dengan tipografi Poppins.
+* **Navigasi ala iOS**: Menggunakan sistem navigasi tab bar dan stack yang elegan.
 
+## Cara Instalasi
+
+1. **Clone Repository**
+   ```bash
+   git clone [https://github.com/username/MovieWishlist.git](https://github.com/username/MovieWishlist.git)
+   cd MovieWishlist
+
+2. Instal Dependensi
    ```bash
    npm install
-   ```
 
-2. Start the app
-
+3. Menjalankan Aplikasi
+   Web :
+   ```bash
+   npx expo start --web
+   
+   Android/iOS : 
    ```bash
    npx expo start
-   ```
 
-In the output, you'll find options to open the app in a
+## Teknologi Utama
+* **Framework**: React Native & Expo.
+* **Navigasi**: React Navigation (Native Stack & Bottom Tabs).
+* **State Management**: React Context API untuk pengelolaan tema, bahasa, dan data wishlist secara global.
+* **Sumber Data**: The Movie Database (TMDB) API.
+* **Styling**: StyleSheet API dengan dukungan Google Fonts (Poppins).
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Struktur Project
+* **src/context**: Logika State Global untuk pengaturan aplikasi dan data film.
+* **src/screens**: Kumpulan halaman utama seperti Home, Profile, Wishlist, dan Settings.
+* **src/components**: Komponen UI yang dapat digunakan kembali seperti Header dan Search Bar.
+* **src/services**: Konfigurasi layanan API untuk pengambilan data film.
+* **src/navigation**: Arsitektur navigasi antar halaman.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+© 2026 MovieWishlist Project.
