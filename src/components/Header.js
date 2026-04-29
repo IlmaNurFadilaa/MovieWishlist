@@ -1,87 +1,64 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { StyleSheet, TextInput, View } from "react-native";
+import { SettingsContext } from "../context/SettingsContext";
 
-const COLORS = { bg: "#0B0F19", grey: "#A0A0A0", gold: "#E5A93C" };
-
-const Header = ({ onSearch }) => {
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
+export default function Header({ onSearch }) {
   const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearch = (text) => {
-    setSearchQuery(text);
-    onSearch(text); // Kirim kata kunci ke HomeScreen
-  };
+  const { colors, t } = useContext(SettingsContext);
 
   return (
-    <View style={styles.header}>
-      <View style={styles.logoCircleSmall} />
+    <View style={[styles.container, { backgroundColor: colors.bg }]}>
+      {/* Logo Kiri Tetap Ada */}
+      <View style={[styles.logoCircle, { backgroundColor: colors.gold }]} />
 
-      <View
-        style={[styles.searchBar, isSearchFocused && styles.searchBarActive]}
-      >
-        <Ionicons
-          name="search"
-          size={20}
-          color={isSearchFocused ? COLORS.gold : COLORS.grey}
-        />
+      {/* Kotak Pencarian Sekarang Lebih Lebar karena ikon profil dihapus */}
+      <View style={[styles.searchContainer, { backgroundColor: colors.card, borderColor: colors.border }]}>
+        <Ionicons name="search" size={18} color={colors.grey} style={styles.searchIcon} />
         <TextInput
-          style={styles.searchInput}
-          placeholder="Search Movie"
-          placeholderTextColor={COLORS.grey}
+          style={[styles.searchInput, { color: colors.text }]}
+          placeholder={t.search}
+          placeholderTextColor={colors.grey}
           value={searchQuery}
-          onChangeText={handleSearch}
-          onFocus={() => setIsSearchFocused(true)}
-          onBlur={() => setIsSearchFocused(false)}
-          underlineColorAndroid="transparent" // MENGHILANGKAN GARIS BAWAH ANDROID
+          onChangeText={(text) => {
+            setSearchQuery(text);
+            if (onSearch) onSearch(text);
+          }}
         />
       </View>
-
-      <Ionicons name="person-circle-outline" size={34} color={COLORS.grey} />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  header: {
+  container: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 15,
     alignItems: "center",
-    backgroundColor: COLORS.bg,
-    zIndex: 10,
+    paddingHorizontal: 20,
+    paddingTop: 15,
+    paddingBottom: 10,
   },
-  logoCircleSmall: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: COLORS.grey,
+  logoCircle: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
   },
-  searchBar: {
+  searchContainer: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "rgba(160, 160, 160, 0.1)",
-    height: 40,
-    borderRadius: 20,
-    marginHorizontal: 15,
+    borderRadius: 15,
     paddingHorizontal: 15,
+    height: 42,
+    marginLeft: 15, // Jarak dari logo
     borderWidth: 1,
-    borderColor: "transparent",
   },
-  searchBarActive: {
-    borderColor: COLORS.gold,
-    backgroundColor: "rgba(229, 169, 60, 0.05)",
-  },
+  searchIcon: { marginRight: 10 },
   searchInput: {
     flex: 1,
-    marginLeft: 10,
-    color: "white",
     fontFamily: "Poppins_400Regular",
     fontSize: 13,
-    paddingVertical: 0, // Memastikan tidak ada padding tambahan yang buat garis
+    height: "100%",
+    outlineStyle: 'none',
   },
 });
-
-export default Header;

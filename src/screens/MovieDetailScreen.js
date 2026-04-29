@@ -1,26 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { useContext, useEffect, useState } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  ImageBackground,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ActivityIndicator, Image, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { SettingsContext } from "../context/SettingsContext"; // IMPORT CONTEXT
 import { WishlistContext } from "../context/WishlistContext";
 import { getMovieCredits, getMovieDetails } from "../services/api";
-
-const COLORS = {
-  bg: "#0B0F19",
-  red: "#B7121A",
-  gold: "#E5A93C",
-  grey: "#A0A0A0",
-  lightGrey: "#E0E0E0",
-};
 
 export default function MovieDetailScreen({ route, navigation }) {
   const { id } = route.params;
@@ -30,6 +14,7 @@ export default function MovieDetailScreen({ route, navigation }) {
   const [activeTab, setActiveTab] = useState("Detail");
 
   const { wishlist, toggleWishlist } = useContext(WishlistContext);
+  const { colors, t } = useContext(SettingsContext); // AMBIL DATA CONTEXT
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -44,8 +29,8 @@ export default function MovieDetailScreen({ route, navigation }) {
 
   if (loading || !movie) {
     return (
-      <View style={[styles.container, { justifyContent: "center" }]}>
-        <ActivityIndicator size="large" color={COLORS.gold} />
+      <View style={[styles.container, { backgroundColor: colors.bg, justifyContent: "center" }]}>
+        <ActivityIndicator size="large" color={colors.gold} />
       </View>
     );
   }
@@ -54,62 +39,33 @@ export default function MovieDetailScreen({ route, navigation }) {
   const isWishlisted = !!wishlistItem;
   const isReviewed = wishlistItem?.status === "Reviewed";
 
-  const releaseYear = movie.release_date
-    ? movie.release_date.split("-")[0]
-    : "";
-  const genres = movie.genres
-    ? movie.genres.map((g) => g.name).join(", ")
-    : "-";
+  const releaseYear = movie.release_date ? movie.release_date.split("-")[0] : "";
+  const genres = movie.genres ? movie.genres.map((g) => g.name).join(", ") : "-";
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.backButton}
-        onPress={() => navigation.goBack()}
-      >
+    <View style={[styles.container, { backgroundColor: colors.bg }]}>
+      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
         <Ionicons name="chevron-back" size={28} color="white" />
       </TouchableOpacity>
 
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 40 }}
-      >
-        <ImageBackground
-          source={{
-            uri: `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}`,
-          }}
-          style={styles.backdrop}
-        >
-          <LinearGradient
-            colors={["transparent", "rgba(11, 15, 25, 0.7)", COLORS.bg]}
-            locations={[0, 0.5, 1]}
-            style={styles.gradientOverlay}
-          />
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+        <ImageBackground source={{ uri: `https://image.tmdb.org/t/p/w1280${movie.backdrop_path}` }} style={styles.backdrop}>
+          <LinearGradient colors={["transparent", "rgba(0,0,0, 0.7)", colors.bg]} locations={[0, 0.5, 1]} style={styles.gradientOverlay} />
         </ImageBackground>
 
         <View style={styles.centerContent}>
-          <Image
-            source={{
-              uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
-            }}
-            style={styles.poster}
-          />
-          <Text style={styles.title}>{movie.title}</Text>
-          <Text style={styles.year}>{releaseYear}</Text>
+          <Image source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }} style={styles.poster} />
+          <Text style={[styles.title, { color: colors.text }]}>{movie.title}</Text>
+          <Text style={{ color: colors.grey, fontSize: 14, fontFamily: "Poppins_400Regular" }}>{releaseYear}</Text>
         </View>
 
         <View style={styles.tabContainer}>
-          {["Detail", "Overview", "Cast"].map((tab) => (
-            <TouchableOpacity key={tab} onPress={() => setActiveTab(tab)}>
-              <Text
-                style={[
-                  styles.tabText,
-                  activeTab === tab && styles.tabTextActive,
-                ]}
-              >
-                {tab}
+          {[{ key: "Detail", label: t.details }, { key: "Overview", label: t.overview }, { key: "Cast", label: t.cast }].map((tab) => (
+            <TouchableOpacity key={tab.key} onPress={() => setActiveTab(tab.key)}>
+              <Text style={[styles.tabText, activeTab === tab.key ? { color: colors.text, fontFamily: "Poppins_600SemiBold" } : { color: colors.grey }]}>
+                {tab.label}
               </Text>
-              {activeTab === tab && <View style={styles.activeLine} />}
+              {activeTab === tab.key && <View style={[styles.activeLine, { backgroundColor: colors.text }]} />}
             </TouchableOpacity>
           ))}
         </View>
@@ -117,41 +73,26 @@ export default function MovieDetailScreen({ route, navigation }) {
         <View style={styles.tabContent}>
           {activeTab === "Detail" && (
             <View>
-              <DetailRow label="Title" value={movie.title} />
-              <DetailRow label="Original Title" value={movie.original_title} />
-              <DetailRow label="Genres" value={genres} />
-              <DetailRow label="Release Date" value={movie.release_date} />
-              <DetailRow label="Status" value={movie.status} />
-              <DetailRow label="Runtime" value={`${movie.runtime} minutes`} />
+              <DetailRow label="Title" value={movie.title} colors={colors} />
+              <DetailRow label="Original Title" value={movie.original_title} colors={colors} />
+              <DetailRow label="Genres" value={genres} colors={colors} />
+              <DetailRow label="Release Date" value={movie.release_date} colors={colors} />
+              <DetailRow label="Status" value={movie.status} colors={colors} />
+              <DetailRow label="Runtime" value={`${movie.runtime} minutes`} colors={colors} />
             </View>
           )}
 
           {activeTab === "Overview" && (
-            <Text style={styles.overviewText}>{movie.overview}</Text>
+            <Text style={{ color: colors.grey, fontFamily: "Poppins_400Regular", fontSize: 14, lineHeight: 22 }}>{movie.overview}</Text>
           )}
 
           {activeTab === "Cast" && (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={styles.castContainer}
-            >
+            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.castContainer}>
               {cast.slice(0, 10).map((actor) => (
                 <View key={actor.id} style={styles.castCard}>
-                  <Image
-                    source={{
-                      uri: actor.profile_path
-                        ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
-                        : "https://via.placeholder.com/100x150?text=No+Image",
-                    }}
-                    style={styles.castImage}
-                  />
-                  <Text style={styles.castName} numberOfLines={2}>
-                    {actor.name}
-                  </Text>
-                  <Text style={styles.castCharacter} numberOfLines={1}>
-                    {actor.character}
-                  </Text>
+                  <Image source={{ uri: actor.profile_path ? `https://image.tmdb.org/t/p/w185${actor.profile_path}` : "https://via.placeholder.com/100x150?text=No+Image" }} style={[styles.castImage, { borderColor: colors.border }]} />
+                  <Text style={[styles.castName, { color: colors.text }]} numberOfLines={2}>{actor.name}</Text>
+                  <Text style={{ color: colors.gold, fontFamily: "Poppins_400Regular", fontSize: 10, textAlign: "center", marginTop: 2 }} numberOfLines={1}>{actor.character}</Text>
                 </View>
               ))}
             </ScrollView>
@@ -159,50 +100,31 @@ export default function MovieDetailScreen({ route, navigation }) {
         </View>
 
         <View style={styles.actionButtonsContainer}>
-          {/* Kondisi 1: Belum ada di wishlist (Tombol Emas) */}
           {!isWishlisted && (
-            <TouchableOpacity
-              style={styles.wishlistBtnLarge}
-              onPress={() => toggleWishlist(movie)}
-            >
-              <Ionicons name="bookmark" size={20} color={COLORS.bg} />
-              <Text style={styles.wishlistBtnTextLarge}>Add to Wishlist</Text>
+            <TouchableOpacity style={[styles.wishlistBtnLarge, { backgroundColor: colors.gold }]} onPress={() => toggleWishlist(movie)}>
+              <Ionicons name="bookmark" size={20} color={colors.bg} />
+              <Text style={[styles.wishlistBtnTextLarge, { color: colors.bg }]}>{t.add_wishlist}</Text>
             </TouchableOpacity>
           )}
 
-          {/* Kondisi 2: Ada di wishlist (Tombol Merah) */}
           {isWishlisted && !isReviewed && (
             <>
-              <TouchableOpacity
-                style={[styles.wishlistBtnLarge, styles.wishlistedBtn]}
-                onPress={() => toggleWishlist(movie)}
-              >
+              <TouchableOpacity style={[styles.wishlistBtnLarge, { backgroundColor: colors.red }]} onPress={() => toggleWishlist(movie)}>
                 <Ionicons name="trash-outline" size={20} color="white" />
-                <Text style={[styles.wishlistBtnTextLarge, { color: "white" }]}>
-                  Remove from Wishlist
-                </Text>
+                <Text style={[styles.wishlistBtnTextLarge, { color: "white" }]}>{t.remove_wishlist}</Text>
               </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.reviewBtn}
-                onPress={() => navigation.navigate("Review", { movie })}
-              >
-                <Ionicons name="star" size={20} color={COLORS.gold} />
-                <Text style={styles.reviewBtnText}>Write a Review</Text>
+              <TouchableOpacity style={[styles.reviewBtn, { borderColor: colors.gold }]} onPress={() => navigation.navigate("Review", { movie })}>
+                <Ionicons name="star" size={20} color={colors.gold} />
+                <Text style={{ color: colors.gold, fontFamily: "Poppins_700Bold", marginLeft: 10, fontSize: 16 }}>{t.write_review}</Text>
               </TouchableOpacity>
             </>
           )}
 
-          {/* Kondisi 3: Sudah diulas (Badge Riwayat) */}
           {isWishlisted && isReviewed && (
-            <View style={styles.reviewedBadge}>
-              <Ionicons
-                name="checkmark-done-circle"
-                size={24}
-                color={COLORS.gold}
-              />
-              <Text style={styles.reviewedBadgeText}>
-                Reviewed on {wishlistItem.reviewDate}
+            <View style={[styles.reviewedBadge, { backgroundColor: colors.card, borderColor: colors.border }]}>
+              <Ionicons name="checkmark-done-circle" size={24} color={colors.gold} />
+              <Text style={{ color: colors.grey, fontFamily: "Poppins_600SemiBold", marginLeft: 10, fontSize: 14 }}>
+                {t.reviewed_on} {wishlistItem.reviewDate}
               </Text>
             </View>
           )}
@@ -212,153 +134,37 @@ export default function MovieDetailScreen({ route, navigation }) {
   );
 }
 
-const DetailRow = ({ label, value }) => (
+const DetailRow = ({ label, value, colors }) => (
   <View style={styles.detailRow}>
-    <Text style={styles.detailLabel}>{label}</Text>
-    <Text style={styles.detailColon}>:</Text>
-    <Text style={styles.detailValue}>{value || "-"}</Text>
+    <Text style={[styles.detailLabel, { color: colors.text }]}>{label}</Text>
+    <Text style={[styles.detailColon, { color: colors.text }]}>:</Text>
+    <Text style={[styles.detailValue, { color: colors.grey }]}>{value || "-"}</Text>
   </View>
 );
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: COLORS.bg },
+  container: { flex: 1 },
   backButton: { position: "absolute", top: 50, left: 20, zIndex: 10 },
   backdrop: { width: "100%", height: 250 },
   gradientOverlay: { flex: 1 },
   centerContent: { alignItems: "center", marginTop: -100 },
   poster: { width: 140, height: 210, borderRadius: 12 },
-  title: {
-    color: "white",
-    fontSize: 22,
-    fontFamily: "Poppins_700Bold",
-    marginTop: 15,
-    textAlign: "center",
-    paddingHorizontal: 20,
-  },
-  year: {
-    color: COLORS.lightGrey,
-    fontSize: 14,
-    fontFamily: "Poppins_400Regular",
-  },
-  tabContainer: {
-    flexDirection: "row",
-    marginTop: 25,
-    paddingHorizontal: 25,
-    gap: 20,
-  },
-  tabText: {
-    color: COLORS.grey,
-    fontFamily: "Poppins_400Regular",
-    fontSize: 15,
-  },
-  tabTextActive: { color: "white", fontFamily: "Poppins_600SemiBold" },
-  activeLine: {
-    height: 2,
-    backgroundColor: "white",
-    marginTop: 2,
-    width: "100%",
-  },
+  title: { fontSize: 22, fontFamily: "Poppins_700Bold", marginTop: 15, textAlign: "center", paddingHorizontal: 20 },
+  tabContainer: { flexDirection: "row", marginTop: 25, paddingHorizontal: 25, gap: 20 },
+  tabText: { fontFamily: "Poppins_400Regular", fontSize: 15 },
+  activeLine: { height: 2, marginTop: 2, width: "100%" },
   tabContent: { paddingHorizontal: 25, marginTop: 20, minHeight: 180 },
   detailRow: { flexDirection: "row", marginBottom: 10 },
-  detailLabel: {
-    color: "white",
-    fontFamily: "Poppins_600SemiBold",
-    width: 120,
-    fontSize: 13,
-  },
-  detailColon: {
-    color: "white",
-    fontFamily: "Poppins_600SemiBold",
-    marginRight: 10,
-    fontSize: 13,
-  },
-  detailValue: {
-    color: COLORS.lightGrey,
-    fontFamily: "Poppins_400Regular",
-    flex: 1,
-    fontSize: 13,
-  },
-  overviewText: {
-    color: COLORS.lightGrey,
-    fontFamily: "Poppins_400Regular",
-    fontSize: 14,
-    lineHeight: 22,
-  },
+  detailLabel: { fontFamily: "Poppins_600SemiBold", width: 120, fontSize: 13 },
+  detailColon: { fontFamily: "Poppins_600SemiBold", marginRight: 10, fontSize: 13 },
+  detailValue: { fontFamily: "Poppins_400Regular", flex: 1, fontSize: 13 },
   castContainer: { marginTop: 5 },
   castCard: { width: 100, marginRight: 15, alignItems: "center" },
-  castImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: COLORS.grey,
-    backgroundColor: COLORS.grey,
-  },
-  castName: {
-    color: "white",
-    fontFamily: "Poppins_600SemiBold",
-    fontSize: 12,
-    textAlign: "center",
-  },
-  castCharacter: {
-    color: COLORS.gold,
-    fontFamily: "Poppins_400Regular",
-    fontSize: 10,
-    textAlign: "center",
-    marginTop: 2,
-  },
-
+  castImage: { width: 80, height: 80, borderRadius: 40, marginBottom: 8, borderWidth: 1 },
+  castName: { fontFamily: "Poppins_600SemiBold", fontSize: 12, textAlign: "center" },
   actionButtonsContainer: { paddingHorizontal: 30, marginTop: 20, gap: 15 },
-  wishlistBtnLarge: {
-    flexDirection: "row",
-    backgroundColor: COLORS.gold,
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  // PERUBAHAN: Warna background tombol hapus menjadi Merah khas aplikasi
-  wishlistedBtn: { backgroundColor: COLORS.red, borderWidth: 0 },
-
-  wishlistBtnTextLarge: {
-    color: COLORS.bg,
-    fontFamily: "Poppins_700Bold",
-    marginLeft: 10,
-    fontSize: 16,
-  },
-  reviewBtn: {
-    flexDirection: "row",
-    backgroundColor: "transparent",
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: COLORS.gold,
-  },
-  reviewBtnText: {
-    color: COLORS.gold,
-    fontFamily: "Poppins_700Bold",
-    marginLeft: 10,
-    fontSize: 16,
-  },
-
-  reviewedBadge: {
-    flexDirection: "row",
-    backgroundColor: "rgba(160,160,160,0.05)",
-    paddingVertical: 15,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    borderWidth: 1,
-    borderColor: "rgba(160,160,160,0.2)",
-  },
-  reviewedBadgeText: {
-    color: COLORS.grey,
-    fontFamily: "Poppins_600SemiBold",
-    marginLeft: 10,
-    fontSize: 14,
-  },
+  wishlistBtnLarge: { flexDirection: "row", paddingVertical: 15, borderRadius: 10, alignItems: "center", justifyContent: "center" },
+  wishlistBtnTextLarge: { fontFamily: "Poppins_700Bold", marginLeft: 10, fontSize: 16 },
+  reviewBtn: { flexDirection: "row", backgroundColor: "transparent", paddingVertical: 15, borderRadius: 10, alignItems: "center", justifyContent: "center", borderWidth: 1 },
+  reviewedBadge: { flexDirection: "row", paddingVertical: 15, borderRadius: 10, alignItems: "center", justifyContent: "center", borderWidth: 1 },
 });

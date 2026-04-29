@@ -1,12 +1,12 @@
 import { FontAwesome } from "@expo/vector-icons";
 import { useState } from "react";
 import {
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 const COLORS = {
@@ -22,62 +22,67 @@ export default function LoginScreen({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.logoCircle} />
+      {/* KONTINER BARU: Memastikan konten di tengah dan tidak mekar di layar besar */}
+      <View style={styles.contentContainer}>
+        
+        <View style={styles.logoCircle} />
 
-      <View style={styles.inputGroup}>
-        <TextInput
-          style={[
-            styles.input,
-            focusedInput === "email" && styles.inputActive, // Berubah jika email fokus
-          ]}
-          placeholder="Email"
-          placeholderTextColor={COLORS.grey}
-          onFocus={() => setFocusedInput("email")}
-          onBlur={() => setFocusedInput(null)}
-        />
-        <TextInput
-          style={[
-            styles.input,
-            focusedInput === "pass" && styles.inputActive, // Berubah jika pass fokus
-          ]}
-          placeholder="Password"
-          placeholderTextColor={COLORS.grey}
-          secureTextEntry
-          onFocus={() => setFocusedInput("pass")}
-          onBlur={() => setFocusedInput(null)}
-        />
+        <View style={styles.inputGroup}>
+          <TextInput
+            style={[
+              styles.input,
+              focusedInput === "email" && styles.inputActive, // Berubah jika email fokus
+            ]}
+            placeholder="Email"
+            placeholderTextColor={COLORS.grey}
+            onFocus={() => setFocusedInput("email")}
+            onBlur={() => setFocusedInput(null)}
+          />
+          <TextInput
+            style={[
+              styles.input,
+              focusedInput === "pass" && styles.inputActive, // Berubah jika pass fokus
+            ]}
+            placeholder="Password"
+            placeholderTextColor={COLORS.grey}
+            secureTextEntry
+            onFocus={() => setFocusedInput("pass")}
+            onBlur={() => setFocusedInput(null)}
+          />
 
-        <TouchableOpacity style={styles.forgotBtn}>
-          <Text style={styles.forgotText}>Forgot password?</Text>
+          <TouchableOpacity style={styles.forgotBtn}>
+            <Text style={styles.forgotText}>Forgot password?</Text>
+          </TouchableOpacity>
+        </View>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.replace("Main")}
+        >
+          <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-      </View>
 
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.replace("Main")}
-      >
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
-
-      <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
-        <Text style={styles.linkText}>
-          Haven't account? <Text style={{ color: COLORS.gold }}>Sign Up</Text>
-        </Text>
-      </TouchableOpacity>
-
-      <View style={styles.dividerContainer}>
-        <View style={styles.line} />
-        <Text style={styles.orText}>or continue with</Text>
-        <View style={styles.line} />
-      </View>
-
-      <View style={styles.socialContainer}>
-        <TouchableOpacity style={styles.socialBtn}>
-          <FontAwesome name="google" size={24} color="#EA4335" />
+        <TouchableOpacity onPress={() => navigation.navigate("SignUp")}>
+          <Text style={styles.linkText}>
+            Haven't account? <Text style={{ color: COLORS.gold }}>Sign Up</Text>
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.socialBtn}>
-          <FontAwesome name="facebook" size={24} color="#1877F2" />
-        </TouchableOpacity>
+
+        <View style={styles.dividerContainer}>
+          <View style={styles.line} />
+          <Text style={styles.orText}>or continue with</Text>
+          <View style={styles.line} />
+        </View>
+
+        <View style={styles.socialContainer}>
+          <TouchableOpacity style={styles.socialBtn}>
+            <FontAwesome name="google" size={24} color="#EA4335" />
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.socialBtn}>
+            <FontAwesome name="facebook" size={24} color="#1877F2" />
+          </TouchableOpacity>
+        </View>
+
       </View>
     </SafeAreaView>
   );
@@ -87,9 +92,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.bg,
+    alignItems: "center", // Memusatkan contentContainer secara horizontal
+    justifyContent: "center", // Memusatkan secara vertikal
+  },
+  // STYLE BARU: Pembatas untuk responsivitas layar lebar dan HP
+  contentContainer: {
+    width: "100%",
+    maxWidth: 400, // Di laptop, lebarnya akan mentok di 400px (ukuran ideal mobile)
+    paddingHorizontal: 30, // Di HP, memberi jarak agar tidak mepet layar
     alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: 35,
   },
   logoCircle: {
     width: 110,

@@ -2,41 +2,46 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useContext } from "react";
+import { SettingsContext } from "../context/SettingsContext"; // IMPORT CONTEXT
 
+import EditProfileScreen from "../screens/EditProfileScreen";
 import HomeScreen from "../screens/HomeScreen";
 import LoginScreen from "../screens/LoginScreen";
 import MovieDetailScreen from "../screens/MovieDetailScreen";
-import ProfileScreen from "../screens/ProfileScreen"; // IMPORT PROFILE SCREEN
+import NotificationScreen from "../screens/NotificationScreen";
+import ProfileScreen from "../screens/ProfileScreen";
 import ReviewScreen from "../screens/ReviewScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 import SignUpScreen from "../screens/SignUpScreen";
+import StatisticsScreen from "../screens/StatisticsScreen";
 import WishlistScreen from "../screens/WishlistScreen";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-const COLORS = {
-  bg: "#0B0F19",
-  red: "#B7121A",
-  gold: "#E5A93C",
-  grey: "#A0A0A0",
-};
-
 function MainTabs() {
+  const { colors, t } = useContext(SettingsContext); // AMBIL DATA DARI CONTEXT
+
   return (
     <Tab.Navigator
       screenOptions={{
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: COLORS.bg,
-          borderTopWidth: 0,
-          height: 65,
+          backgroundColor: colors.card, // WARNA DINAMIS
+          borderTopWidth: 0.5,
+          borderTopColor: colors.border,
+          height: 80,
+          paddingTop: 10,
+          paddingBottom: 20,
+          elevation: 0,
         },
-        tabBarActiveTintColor: COLORS.gold,
-        tabBarInactiveTintColor: COLORS.grey,
+        tabBarActiveTintColor: colors.gold,
+        tabBarInactiveTintColor: colors.grey,
         tabBarLabelStyle: {
-          fontFamily: "Poppins_400Regular",
+          fontFamily: "Poppins_600SemiBold",
           fontSize: 10,
-          marginBottom: 8,
+          marginTop: 4,
         },
       }}
     >
@@ -44,31 +49,30 @@ function MainTabs() {
         name="HomeTab"
         component={HomeScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="home" size={24} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? "home" : "home-outline"} size={24} color={color} />
           ),
-          tabBarLabel: "Home",
+          tabBarLabel: t.home, // BAHASA DINAMIS
         }}
       />
       <Tab.Screen
         name="WishlistTab"
         component={WishlistScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="bookmark" size={24} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? "bookmark" : "bookmark-outline"} size={24} color={color} />
           ),
-          tabBarLabel: "Wishlist",
+          tabBarLabel: t.wishlist, // BAHASA DINAMIS
         }}
       />
-      {/* TAB PROFILE BARU */}
       <Tab.Screen
         name="ProfileTab"
         component={ProfileScreen}
         options={{
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="person" size={24} color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? "person" : "person-outline"} size={24} color={color} />
           ),
-          tabBarLabel: "Profile",
+          tabBarLabel: t.profile, // BAHASA DINAMIS
         }}
       />
     </Tab.Navigator>
@@ -84,6 +88,10 @@ export default function AppNavigator({ onReady }) {
         <Stack.Screen name="Main" component={MainTabs} />
         <Stack.Screen name="MovieDetail" component={MovieDetailScreen} />
         <Stack.Screen name="Review" component={ReviewScreen} />
+        <Stack.Screen name="Notifications" component={NotificationScreen} />
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+        <Stack.Screen name="Statistics" component={StatisticsScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
