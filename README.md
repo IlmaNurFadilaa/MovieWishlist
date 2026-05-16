@@ -2,7 +2,7 @@
 
 Aplikasi **MovieWishlist** adalah platform pencarian dan manajemen daftar film berbasis **React Native** dan **Expo**. Aplikasi ini dirancang dengan antarmuka modern yang responsif untuk penggunaan di perangkat mobile maupun web.
 
-## Fitur Utama
+### Fitur Utama
 
 * **Pencarian Film Real-time**: Menggunakan integrasi TMDB API untuk mencari ribuan judul film.
 * **Manajemen Daftar Keinginan**: Fitur untuk menyimpan film ke daftar "To Watch" atau menandainya sebagai "Reviewed".
@@ -11,7 +11,7 @@ Aplikasi **MovieWishlist** adalah platform pencarian dan manajemen daftar film b
 * **Antarmuka Responsif**: Desain UI yang dioptimalkan untuk berbagai ukuran layar dengan tipografi Poppins.
 * **Navigasi ala iOS**: Menggunakan sistem navigasi tab bar dan stack yang elegan.
 
-## Cara Instalasi
+### Cara Instalasi
 
 1. **Clone Repository**
    ```bash
@@ -23,22 +23,21 @@ Aplikasi **MovieWishlist** adalah platform pencarian dan manajemen daftar film b
    npm install
 
 3. Menjalankan Aplikasi
-   Web :
    ```bash
+   Web :
    npx expo start --web
    
-   Android/iOS : 
-   ```bash
+   Android/iOS :
    npx expo start
 
-## Teknologi Utama
+### Teknologi Utama
 * **Framework**: React Native & Expo.
 * **Navigasi**: React Navigation (Native Stack & Bottom Tabs).
 * **State Management**: React Context API untuk pengelolaan tema, bahasa, dan data wishlist secara global.
 * **Sumber Data**: The Movie Database (TMDB) API.
 * **Styling**: StyleSheet API dengan dukungan Google Fonts (Poppins).
 
-## Struktur Project
+### Struktur Project
 * **src/context**: Logika State Global untuk pengaturan aplikasi dan data film.
 * **src/screens**: Kumpulan halaman utama seperti Home, Profile, Wishlist, dan Settings.
 * **src/components**: Komponen UI yang dapat digunakan kembali seperti Header dan Search Bar.
